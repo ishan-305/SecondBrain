@@ -41,6 +41,6 @@ model tags{
 model Link{
   id Int @id @default(autoincrement())
   hash String
-  user_id_Link Int
+  user_id_Link Int @unique
   user users @relation(fields: [user_id_Link], references: [id]) 
 }
