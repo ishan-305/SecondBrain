@@ -11,7 +11,7 @@ export const postContent = async (req: Request, res: Response) => {
       link,
       title,
       type,
-      user_id: Number(req.userId),
+      user_id: req.userId,
     };
 
     // If tags is provided and has at least one value, create the tag.
@@ -27,6 +27,8 @@ export const postContent = async (req: Request, res: Response) => {
 
     res.status(201).json(content);
   } catch (error) {
+    console.error(error);
+
     res.status(500).json({
       message: "Internal Server Error",
     });
@@ -43,6 +45,26 @@ export const getContent = async (req: Request, res: Response) => {
 
     res.status(200).json({
       content,
+    });
+  } catch (error) {
+    res.status(500).json({
+      message: "Internal Server Error",
+    });
+  }
+};
+
+export const deleteContent = async (req: Request, res: Response) => {
+  const contentId = req.body.id;
+  try {
+    await prisma.content.delete({
+      where: {
+        id: contentId,
+        user_id: Number(req.userId),
+      },
+    });
+
+    res.status(200).json({
+      message: "Content deleted successfully",
     });
   } catch (error) {
     res.status(500).json({
