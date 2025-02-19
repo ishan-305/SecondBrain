@@ -26,8 +26,8 @@ model content{
   link String
   type String
   title String
-  tag_id Int
-  tags tags @relation(fields: [tag_id], references: [id])
+  tag_id Int?
+  tags tags? @relation(fields: [tag_id], references: [id])
   user_id Int
   user users @relation(fields: [user_id], references: [id])
 }
