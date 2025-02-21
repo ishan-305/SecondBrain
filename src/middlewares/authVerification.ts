@@ -4,7 +4,8 @@ import { JWT_SECRET_KEY } from "../config/config";
 export const authCheck = (req: Request, res: Response, next: NextFunction) => {
   const token = req.cookies?.authToken;
   if (!token) {
-    return res.status(401).json({ message: "Unauthorized: No token provided" });
+    res.status(401).json({ message: "Unauthorized: No token provided" });
+    return;
   }
   const decoded = jwt.verify(token as string, JWT_SECRET_KEY);
   if (decoded) {

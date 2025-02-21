@@ -1,6 +1,6 @@
 import { Request, Response } from "express";
 import { PrismaClient } from "@prisma/client";
-import jwt from "jsonwebtoken";
+import jwt, { JwtPayload } from "jsonwebtoken";
 import { JWT_SECRET_KEY } from "../config/config";
 const prisma = new PrismaClient();
 
@@ -43,6 +43,28 @@ export const signin = async (req: Request, res: Response) => {
   } else {
     res.status(403).json({
       message: "Invalid username or password",
+    });
+  }
+};
+
+export const getUser = async (req: Request, res: Response) => {
+  const token = req.cookies?.authToken;
+  if (!token) {
+    res.status(401).json({ message: "Unauthorized: No token provided" });
+    return;
+  }
+  const decoded = jwt.verify(token as string, JWT_SECRET_KEY);
+  if (decoded) {
+    if (typeof decoded === "string") {
+      res.status(403).json({
+        message: "You are not logged in",
+      });
+      return;
+    }
+    req.userId = (decoded as JwtPayload).id;
+  } else {
+    res.status(403).json({
+      message: "You are not logged in",
     });
   }
 };
